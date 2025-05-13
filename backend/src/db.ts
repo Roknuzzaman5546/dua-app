@@ -5,7 +5,7 @@ sqlite3.verbose();
 
 export const getDBConnection = async () => {
     return open({
-        filename: "./duas.db",
+        filename: "./dua_main.db",
         driver: sqlite3.Database,
     });
 }

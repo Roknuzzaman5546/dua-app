@@ -4,14 +4,14 @@ const router = Router();
 
 router.get('/categories', async (_req, res) => {
   const db = await getDBConnection();
-  const categories = await db.all('SELECT * FROM categories');
+  const categories = await db.all('SELECT * FROM category');
   res.json(categories);
 });
 
 router.get('/subcategories/:categoryId', async (req, res) => {
   const db = await getDBConnection();
   const subcategories = await db.all(
-    'SELECT * FROM subcategories WHERE category_id = ?',
+    'SELECT * FROM sub_category WHERE cat_id = ?',
     [req.params.categoryId]
   );
   res.json(subcategories);
@@ -20,7 +20,7 @@ router.get('/subcategories/:categoryId', async (req, res) => {
 router.get('/duas/:subcategoryId', async (req, res) => {
   const db = await getDBConnection();
   const duas = await db.all(
-    'SELECT * FROM duas WHERE subcategory_id = ?',
+    'SELECT * FROM dua WHERE subcat_id = ?',
     [req.params.subcategoryId]
   );
   res.json(duas);
