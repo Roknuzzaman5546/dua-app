@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 type Category = {
   id: number;
-  name_en: string;
+  cat_name_en: string;
 };
 
 export default function Sidebar() {
@@ -23,7 +23,7 @@ export default function Sidebar() {
         {categories.map((cat) => (
           <li key={cat.id}>
             <a href={`/category/${cat.id}`} className="text-blue-500 hover:underline">
-              {cat.name_en}
+              {cat?.cat_name_en}
             </a>
           </li>
         ))}
