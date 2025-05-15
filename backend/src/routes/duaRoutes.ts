@@ -8,6 +8,12 @@ router.get('/categories', async (_req, res) => {
   res.json(categories);
 });
 
+router.get('/all-duas', async (_req, res) => {
+  const db = await getDBConnection();
+  const duas = await db.all('SELECT * FROM dua');
+  res.json(duas);
+});
+
 router.get('/subcategories/:categoryId', async (req, res) => {
   const db = await getDBConnection();
   const subcategories = await db.all(
