@@ -17,6 +17,7 @@ export interface Dua {
 
 export interface Subcategory {
   id: number;
+  subcat_id: any;
   name_en: string;
   name_bn: string;
   cat_id: number;
@@ -26,6 +27,7 @@ export interface Subcategory {
 
 export interface Category {
   id: number;
+  cat_id: any;
   name_en: string;
   name_bn: string;
   subcategories?: Subcategory[];
