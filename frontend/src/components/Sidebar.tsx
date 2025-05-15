@@ -1,53 +1,40 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-
-type Category = {
-  id: number;
-  cat_id: number;
-  cat_name_en: string;
-};
-
-type SubCategory = {
-  id: number;
-  subcat_name_en: string;
-  cat_id: number;
-};
-
-type Dua = {
-  id: number;
-  dua_name_en: string;
-  subcat_id: number;
-};
+import { fetchAllStructuredData, fetchAllDuas, Category, Dua, Subcategory } from '@/app/constants/data';
+import { useEffect, useState } from 'react';
 
 export default function Sidebar() {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [subcategories, setSubcategories] = useState<Record<number, SubCategory[]>>({});
+  const [subcategories, setSubcategories] = useState<Record<number, Subcategory[]>>({});
   const [duas, setDuas] = useState<Record<number, Dua[]>>({});
   const [expandedCategoryId, setExpandedCategoryId] = useState<number | null>(null);
   const [expandedSubcatId, setExpandedSubcatId] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/categories')
-      .then((res) => res.json())
-      .then(setCategories);
+    const getData = async () => {
+      const data = await fetchAllStructuredData();
+      setCategories(data);
+    };
+    getData();
   }, []);
 
-  const handleCategoryClick = async (catId: number) => {
+  const handleCategoryClick = (catId: number) => {
     setExpandedCategoryId(expandedCategoryId === catId ? null : catId);
 
+    // Set subcategories from already-fetched categories
     if (!subcategories[catId]) {
-      const res = await fetch(`http://localhost:5000/api/subcategories/${catId}`);
-      const data = await res.json();
-      setSubcategories((prev) => ({ ...prev, [catId]: data }));
+      const cat = categories.find((c) => c.id === catId);
+      if (cat && cat.subcategories) {
+        setSubcategories((prev) => ({ ...prev, [catId]: cat.subcategories }));
+      }
     }
+    setExpandedSubcatId(null); // Collapse any open subcategory when switching category
   };
 
   const handleSubcategoryClick = async (subcatId: number) => {
     setExpandedSubcatId(expandedSubcatId === subcatId ? null : subcatId);
 
     if (!duas[subcatId]) {
-      const res = await fetch(`http://localhost:5000/api/duas/${subcatId}`);
-      const data = await res.json();
+      const data = await fetchAllDuas(subcatId);
       setDuas((prev) => ({ ...prev, [subcatId]: data }));
     }
   };
@@ -66,7 +53,7 @@ export default function Sidebar() {
         {categories.map((cat) => (
           <li key={cat.id}>
             <button
-              onClick={() => handleCategoryClick(cat.cat_id)}
+              onClick={() => handleCategoryClick(cat.id)}
               className="w-full text-left text-blue-600 hover:underline"
             >
               {cat.cat_name_en}

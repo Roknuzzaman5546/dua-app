@@ -1,33 +1,27 @@
 'use client';
-import Sidebar from "@/components/Sidebar";
+import DuaCard from "@/components/DuaCard";
 import React, { useEffect, useState } from 'react';
-
-type Dua = {
-  id: number;
-  dua_name_en: string;
-  // other fields...
-};
+import { fetchAllDuas, Dua } from "@/app/constants/data";
 
 export default function Home() {
-    const [duas, setDuas] = useState<Dua[]>([]);
+  const [duas, setDuas] = useState<Dua[]>([]);
+  // console.log(duas)
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/all-duas')
-      .then((res) => res.json())
-      .then(setDuas);
+    const getData = async () => {
+      const allDuas = await fetchAllDuas();
+      setDuas(allDuas);
+    };
+    getData();
   }, []);
 
   return (
-    <div className=" flex">
-      <Sidebar />
+    <div className="flex">
       <main className="flex-1 p-4">
         <div className="p-4">
           <h1 className="text-xl font-bold mb-4">All Duas</h1>
           {duas.map((dua) => (
-            <div key={dua.id} id={`dua-${dua.id}`} className="mb-4 p-2 border rounded">
-              <h2 className="font-semibold">{dua.dua_name_en}</h2>
-              {/* Add more dua info if needed */}
-            </div>
+            <DuaCard key={dua.dua_id} dua={dua} />
           ))}
         </div>
       </main>
